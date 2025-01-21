@@ -6,7 +6,7 @@ pipeline {
         IMAGE_TAG = 'latest'            
         K8S_NAMESPACE = 'default'       
         AWS_ACCOUNT_ID = '090814668573'
-        YOUR_EKS_CLUSTER_NAME = 'prod-nrl-nrl_internal'
+        
     }
     stages {
         stage('Checkout Code') {
@@ -50,7 +50,7 @@ pipeline {
                 script {
                     withKubeConfig(credentialsId: 'k8s-credentials-id') {
                         sh """
-                        kubectl config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/<YOUR_EKS_CLUSTER_NAME>
+                        kubectl config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
                         kubectl apply -f k8s/deployment.yaml
                         kubectl apply -f k8s/service.yaml
                         kubectl apply -f k8s/ingress.yaml
