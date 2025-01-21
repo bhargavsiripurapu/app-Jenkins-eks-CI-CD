@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-repo.git'
+                git branch: 'main', url: 'https://github.com/bhargavsiripurapu/app-Jenkins-eks-CI-CD.git'
             }
         }
         stage('Build Docker Image') {
@@ -35,8 +35,8 @@ pipeline {
                 script {
                     sh """
                     sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' k8s/deployment.yaml
-                    git config user.email "ci-cd@example.com"
-                    git config user.name "CI/CD Pipeline"
+                    git config user.email "bhargav.ptd@gmail.com"
+                    git config user.name "bhargavsiripurapu"
                     git add k8s/deployment.yaml
                     git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
                     git push origin main
