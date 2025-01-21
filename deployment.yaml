@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nrl-app
+  labels:
+    app: nrl-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nrl-app
+  template:
+    metadata:
+      labels:
+        app: nrl-app
+    spec:
+      containers:
+      - name: nrl-app-container
+        image: <ECR_REPOSITORY_URI>:latest
+        ports:
+        - containerPort: 80
