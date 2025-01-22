@@ -53,8 +53,8 @@ pipeline {
                         git remote set-url origin https://$GITHUB_TOKEN@github.com/bhargavsiripurapu/app-Jenkins-eks-CI-CD.git
                         
                         # If changes are detected, commit and push
-                        git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}" || echo "No changes to commit"
-                        git push origin main || echo "No changes to push"
+                        #git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}" || echo "No changes to commit"
+                        #git push origin main || echo "No changes to push"
                         """
                     }
                 }
