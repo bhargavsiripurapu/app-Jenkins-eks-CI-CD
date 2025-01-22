@@ -73,9 +73,23 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'k8s-config-base64', variable: 'KUBECONFIG_BASE64')]) {
                         writeFile file: 'kubeconfig.base64', text: "${KUBECONFIG_BASE64}"
+                        
+                        // Decode the base64 kubeconfig to the actual kubeconfig file
                         sh """
                         base64 -d kubeconfig.base64 > kubeconfig
-                        kubectl config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
+                        
+                        # Verify the content of the kubeconfig to ensure the correct context is in place
+                        cat kubeconfig
+                        
+                        # Export the KUBECONFIG environment variable
+                        export KUBECONFIG=\$(pwd)/kubeconfig
+                        
+                        # Use AWS CLI to configure kubectl with EKS cluster credentials
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
+                        
+                        # Now kubectl can use the proper context set by EKS
+                        kubectl version --client
+                        kubectl get nodes  # Sample command to check cluster access
                         kubectl apply -f deployment.yaml
                         kubectl apply -f service.yaml
                         kubectl apply -f ingress.yaml
@@ -84,6 +98,7 @@ pipeline {
                 }
             }
         }
+
     }
     
 }
