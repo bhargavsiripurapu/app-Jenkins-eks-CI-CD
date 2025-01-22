@@ -87,6 +87,7 @@ pipeline {
                         
                         # Check cluster nodes
                         kubectl version --client
+                        kubectl config get-contexts
                         kubectl get nodes
                         
                         # Deploy Kubernetes manifests
