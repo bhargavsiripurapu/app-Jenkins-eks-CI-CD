@@ -52,7 +52,7 @@ pipeline {
             steps {
                 sh """
                 # Download and install kubectl
-                curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+                curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.6/2024-11-15/bin/linux/amd64/kubectl
                 chmod +x ./kubectl
         
                 # Move kubectl to /usr/local/bin
