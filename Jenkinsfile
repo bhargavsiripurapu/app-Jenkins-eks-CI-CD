@@ -86,9 +86,7 @@ pipeline {
                         export KUBECONFIG=\$(pwd)/kubeconfig
                         
                         # Use AWS CLI to configure kubectl with EKS cluster credentials
-                        kubectl config delete-context arn:aws:eks:ap-south-2:090814668573:cluster/prod-nrl-nrl_internal
-                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --kubeconfig /var/lib/jenkins/workspace/NRL_Testing/kubeconfig
-
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
                         
                         
                         # Now kubectl can use the proper context set by EKS
