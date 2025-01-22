@@ -52,8 +52,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'k8s-config-base64', variable: 'KUBECONFIG_BASE64')]) {
+                        writeFile file: 'kubeconfig.base64', text: "${KUBECONFIG_BASE64}"
                         sh """
-                        echo $KUBECONFIG_BASE64 | base64 -d > kubeconfig
+                        base64 -d kubeconfig.base64 > kubeconfig
                         kubectl --kubeconfig=kubeconfig config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
                         kubectl --kubeconfig=kubeconfig apply -f deployment.yaml
                         kubectl --kubeconfig=kubeconfig apply -f service.yaml
