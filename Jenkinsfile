@@ -34,14 +34,17 @@ pipeline {
         stage('Update Deployment File') {
             steps {
                 script {
-                    sh """
-                    sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' deployment.yaml
-                    git config user.email "bhargav.ptd@gmail.com"
-                    git config user.name "bhargavsiripurapu"
-                    git add deployment.yaml
-                    git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
-                    git push origin main
-                    """
+                    withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
+                        sh """
+                        sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' deployment.yaml
+                        git config --global user.email "bhargav.ptd@gmail.com"
+                        git config --global user.name "bhargavsiripurapu"
+                        git remote set-url origin https://$GITHUB_TOKEN@github.com/bhargavsiripurapu/app-Jenkins-eks-CI-CD.git
+                        git add deployment.yaml
+                        git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
+                        git push origin main
+                        """
+                    }
                 }
             }
         }
