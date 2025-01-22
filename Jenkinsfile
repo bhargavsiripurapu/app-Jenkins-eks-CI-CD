@@ -51,9 +51,19 @@ pipeline {
         stage('Install kubectl') {
             steps {
                 sh """
-                curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.6/2024-11-15/bin/linux/amd64/kubectl
+                # Download and install kubectl
+                curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
                 chmod +x ./kubectl
-                mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+        
+                # Move kubectl to /usr/local/bin
+                sudo mv ./kubectl /usr/local/bin/kubectl
+                
+                # Update the PATH for the current session
+                export PATH=\$PATH:/usr/local/bin
+                
+                # Verify kubectl installation
+                echo "kubectl installed in PATH: \$PATH"
+                which kubectl
                 kubectl version --client
                 """
             }
