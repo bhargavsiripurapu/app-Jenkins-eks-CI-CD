@@ -3,10 +3,9 @@ pipeline {
     environment {
         AWS_REGION = 'ap-south-2'         
         ECR_REPO = 'nrl-internal'       
-        IMAGE_TAG = 'latest'            
+        IMAGE_TAG = "${BUILD_NUMBER}"  // Use Jenkins Build Number as the image tag
         K8S_NAMESPACE = 'default'       
         AWS_ACCOUNT_ID = '090814668573'
-        
     }
     stages {
         stage('Checkout Code') {
@@ -24,11 +23,10 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 script {
-                   sh """
-                   aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                   docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
-                   """
-                 
+                    sh """
+                    aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}
+                    """
                 }
             }
         }
@@ -37,6 +35,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
                         sh """
+                        # Replace image tag in deployment.yaml with the new image tag
                         sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' deployment.yaml
                         git config --global user.email "bhargav.ptd@gmail.com"
                         git config --global user.name "bhargavsiripurapu"
@@ -96,8 +95,5 @@ pipeline {
                 }
             }
         }
-        
-
     }
-    
 }
