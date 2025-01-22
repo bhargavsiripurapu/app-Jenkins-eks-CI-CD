@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' k8s/deployment.yaml
+                    sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' deployment.yaml
                     git config user.email "bhargav.ptd@gmail.com"
                     git config user.name "bhargavsiripurapu"
                     git add deployment.yaml
