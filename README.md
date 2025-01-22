@@ -1,4 +1,3 @@
-# app-Jenkins-eks-CI-CD
 pipeline {
     agent any
     environment {
@@ -72,36 +71,32 @@ pipeline {
         }
         stage('Deploy to EKS') {
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'k8s-config-base64', variable: 'KUBECONFIG_BASE64')]) {
-                        writeFile file: 'kubeconfig.base64', text: "${KUBECONFIG_BASE64}"
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                    script {
+                        // Export AWS credentials to environment
+                        sh '''
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                        # Confirm AWS CLI works
+                        aws sts get-caller-identity
+                         # Update kubeconfig with EKS context
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
                         
-                        // Decode the base64 kubeconfig to the actual kubeconfig file
-                        sh """
-                        base64 -d kubeconfig.base64 > kubeconfig
-                        
-                        # Verify the content of the kubeconfig to ensure the correct context is in place
-                        cat kubeconfig
-                        
-                        # Export the KUBECONFIG environment variable
-                        export KUBECONFIG=\$(pwd)/kubeconfig
-                        
-                        # Use AWS CLI to configure kubectl with EKS cluster credentials
-                        #aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
-                        kubectl config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
-
-                        
-                        # Now kubectl can use the proper context set by EKS
+                        # Check cluster nodes
                         kubectl version --client
-                        kubectl get nodes  # Sample command to check cluster access
+                        kubectl config get-contexts
+                        kubectl get nodes
+                        
+                        # Deploy Kubernetes manifests
                         kubectl apply -f deployment.yaml
                         kubectl apply -f service.yaml
                         kubectl apply -f ingress.yaml
-                        """
+                        '''
                     }
                 }
             }
         }
+        
 
     }
     
