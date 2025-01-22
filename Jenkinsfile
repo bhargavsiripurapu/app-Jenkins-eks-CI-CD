@@ -80,10 +80,10 @@ pipeline {
                         base64 -d kubeconfig.base64 > kubeconfig
         
                         # Set KUBECONFIG environment variable
-                        export KUBECONFIG=$(pwd)/kubeconfig
+                        export KUBECONFIG=\$(pwd)/kubeconfig
         
                         # Update kubeconfig with EKS context
-                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --kubeconfig ${KUBECONFIG}
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --kubeconfig \${KUBECONFIG}
                         
                         # Check cluster nodes
                         kubectl version --client
@@ -98,8 +98,5 @@ pipeline {
                 }
             }
         }
-
-
-    
     
 }
