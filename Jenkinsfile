@@ -51,13 +51,9 @@ pipeline {
         stage('Install kubectl') {
             steps {
                 sh """
-                curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+                curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.6/2024-11-15/bin/linux/amd64/kubectl
                 chmod +x ./kubectl
-                mkdir -p /var/lib/jenkins/bin
-                cp ./kubectl /var/lib/jenkins/bin/kubectl
-                export PATH=\$PATH:/var/lib/jenkins/bin
-                echo \$PATH
-                which kubectl
+                mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
                 kubectl version --client
                 """
             }
