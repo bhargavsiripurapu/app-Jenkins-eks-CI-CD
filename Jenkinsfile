@@ -6,8 +6,7 @@ pipeline {
         IMAGE_TAG = 'latest'            
         K8S_NAMESPACE = 'default'       
         AWS_ACCOUNT_ID = '090814668573'
-        AWS_ACCESS_KEY_ID =
-        AWS_SECRET_ACCESS_KEY = 
+        
     }
     stages {
         stage('Checkout Code') {
