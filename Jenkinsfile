@@ -69,7 +69,7 @@ pipeline {
                 """
             }
         }
-        stage('Configure AWS Credentials') {
+        stage('Deploy to EKS') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     script {
@@ -79,28 +79,7 @@ pipeline {
                         export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                         # Confirm AWS CLI works
                         aws sts get-caller-identity
-                        '''
-                    }
-                }
-            }
-        }
-        stage('Deploy to EKS') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'k8s-config-base64', variable: 'KUBECONFIG_BASE64')]) {
-                        writeFile file: 'kubeconfig.base64', text: "${KUBECONFIG_BASE64}"
-        
-                        sh """
-                        # Decode kubeconfig
-                        base64 -d kubeconfig.base64 > kubeconfig
-        
-                        # Set KUBECONFIG environment variable
-                        export KUBECONFIG=\$(pwd)/kubeconfig
-
-                        # Confirm AWS CLI works
-                        aws sts get-caller-identity
-                        
-                        # Update kubeconfig with EKS context
+                         # Update kubeconfig with EKS context
                         aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --kubeconfig \${KUBECONFIG}
                         
                         # Check cluster nodes
@@ -113,11 +92,12 @@ pipeline {
                         kubectl apply -f service.yaml
                         kubectl apply -f ingress.yaml
                         """
+                        '''
                     }
                 }
             }
         }
-
+        
 
     }
     
