@@ -66,9 +66,6 @@ pipeline {
                         writeFile file: 'kubeconfig.base64', text: "${KUBECONFIG_BASE64}"
                         sh """
                         base64 -d kubeconfig.base64 > kubeconfig
-                        echo $PATH
-                        which kubectl
-                        kubectl version --client
                         kubectl --kubeconfig=kubeconfig config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
                         kubectl --kubeconfig=kubeconfig apply -f deployment.yaml
                         kubectl --kubeconfig=kubeconfig apply -f service.yaml
