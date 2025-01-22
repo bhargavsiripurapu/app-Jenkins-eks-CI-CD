@@ -51,12 +51,13 @@ pipeline {
         stage('Deploy to EKS') {
             steps {
                 script {
-                    withKubeConfig(credentialsId: 'k8s-credentials-id') {
+                    withCredentials([string(credentialsId: 'k8s-config-base64', variable: 'KUBECONFIG_BASE64')]) {
                         sh """
-                        kubectl config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
-                        kubectl apply -f deployment.yaml
-                        kubectl apply -f service.yaml
-                        kubectl apply -f ingress.yaml
+                        echo $KUBECONFIG_BASE64 | base64 -d > kubeconfig
+                        kubectl --kubeconfig=kubeconfig config use-context arn:aws:eks:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/prod-nrl-nrl_internal
+                        kubectl --kubeconfig=kubeconfig apply -f deployment.yaml
+                        kubectl --kubeconfig=kubeconfig apply -f service.yaml
+                        kubectl --kubeconfig=kubeconfig apply -f ingress.yaml
                         """
                     }
                 }
