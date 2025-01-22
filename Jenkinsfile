@@ -81,7 +81,8 @@ pipeline {
         
                         # Set KUBECONFIG environment variable
                         export KUBECONFIG=\$(pwd)/kubeconfig
-        
+                        aws s3 ls
+                        aws get-caller-identity
                         # Update kubeconfig with EKS context
                         aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --kubeconfig \${KUBECONFIG}
                         
