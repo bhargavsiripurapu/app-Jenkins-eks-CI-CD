@@ -48,6 +48,20 @@ pipeline {
                 }
             }
         }
+        stage('Install kubectl') {
+            steps {
+                sh """
+                curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+                chmod +x ./kubectl
+                mkdir -p /var/lib/jenkins/bin
+                cp ./kubectl /var/lib/jenkins/bin/kubectl
+                export PATH=\$PATH:/var/lib/jenkins/bin
+                echo \$PATH
+                which kubectl
+                kubectl version --client
+                """
+            }
+        }
         stage('Deploy to EKS') {
             steps {
                 script {
