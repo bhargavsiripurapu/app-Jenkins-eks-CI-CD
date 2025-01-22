@@ -86,7 +86,7 @@ pipeline {
                         export KUBECONFIG=\$(pwd)/kubeconfig
                         
                         # Use AWS CLI to configure kubectl with EKS cluster credentials
-                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --force-update
                         
                         # Now kubectl can use the proper context set by EKS
                         kubectl version --client
