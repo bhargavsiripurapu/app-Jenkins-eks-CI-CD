@@ -80,7 +80,7 @@ pipeline {
                         # Confirm AWS CLI works
                         aws sts get-caller-identity
                          # Update kubeconfig with EKS context
-                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal --kubeconfig \${KUBECONFIG}
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
                         
                         # Check cluster nodes
                         kubectl version --client
