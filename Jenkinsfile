@@ -6,7 +6,8 @@ pipeline {
         IMAGE_TAG = 'latest'            
         K8S_NAMESPACE = 'default'       
         AWS_ACCOUNT_ID = '090814668573'
-        
+        AWS_ACCESS_KEY_ID =
+        AWS_SECRET_ACCESS_KEY = 
     }
     stages {
         stage('Checkout Code') {
@@ -67,6 +68,21 @@ pipeline {
                 which kubectl
                 kubectl version --client
                 """
+            }
+        }
+        stage('Configure AWS Credentials') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                    script {
+                        // Export AWS credentials to environment
+                        sh '''
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                        # Confirm AWS CLI works
+                        aws sts get-caller-identity
+                        '''
+                    }
+                }
             }
         }
         stage('Deploy to EKS') {
