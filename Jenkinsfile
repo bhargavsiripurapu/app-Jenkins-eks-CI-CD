@@ -37,30 +37,18 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
                         sh """
-                        # Remove any existing image tag from the deployment file
-                        sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}|' deployment.yaml
-                        
-                        # Add the latest tag dynamically
-                        echo "Updating deployment.yaml with the latest image tag"
                         sed -i 's|image:.*|image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}|' deployment.yaml
-                        
-                        # Check if there are any changes in the file
-                        git diff --exit-code deployment.yaml || git add deployment.yaml
-
-                        # Commit the updated deployment file to the Git repository
                         git config --global user.email "bhargav.ptd@gmail.com"
                         git config --global user.name "bhargavsiripurapu"
                         git remote set-url origin https://$GITHUB_TOKEN@github.com/bhargavsiripurapu/app-Jenkins-eks-CI-CD.git
-                        
-                        # If changes are detected, commit and push
-                        #git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}" || echo "No changes to commit"
-                        #git push origin main || echo "No changes to push"
+                        git add deployment.yaml
+                        git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
+                        git push origin main
                         """
                     }
                 }
             }
         }
-
         stage('Install kubectl') {
             steps {
                 sh """
@@ -92,7 +80,7 @@ pipeline {
                         # Confirm AWS CLI works
                         aws sts get-caller-identity
                          # Update kubeconfig with EKS context
-                        aws eks --region ${AWS_REGION} update-kubeconfig --name prod-nrl-nrl_internal
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name main-nrl_internal
                         
                         # Check cluster nodes
                         kubectl version --client
@@ -103,9 +91,6 @@ pipeline {
                         kubectl apply -f deployment.yaml
                         kubectl apply -f service.yaml
                         kubectl apply -f ingress.yaml
-                        kubectl get pods
-                        kubectl get svc
-                        kubectl get ing
                         '''
                     }
                 }
