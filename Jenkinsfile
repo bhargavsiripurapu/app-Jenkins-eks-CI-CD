@@ -3,7 +3,7 @@ pipeline {
     environment {
         AWS_REGION = 'ap-south-2'         
         ECR_REPO = 'nrl-internal'       
-        IMAGE_TAG = 'latest'            
+        IMAGE_TAG = "${BUILD_NUMBER}"           
         K8S_NAMESPACE = 'default'       
         AWS_ACCOUNT_ID = '090814668573'
         
