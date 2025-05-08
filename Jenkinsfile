@@ -71,7 +71,7 @@ pipeline {
         }
         stage('Deploy to EKS') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'AWS_CREDENTIALS']]) {
                     script {
                         // Export AWS credentials to environment
                         sh '''
@@ -80,7 +80,7 @@ pipeline {
                         # Confirm AWS CLI works
                         aws sts get-caller-identity
                          # Update kubeconfig with EKS context
-                        aws eks --region ${AWS_REGION} update-kubeconfig --name main-nrl_internal
+                        aws eks --region ${AWS_REGION} update-kubeconfig --name main-NRL
                         
                         # Check cluster nodes
                         kubectl version --client
