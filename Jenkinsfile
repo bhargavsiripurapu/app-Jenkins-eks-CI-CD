@@ -86,14 +86,14 @@ pipeline {
                         aws eks --region ${AWS_REGION} update-kubeconfig --name main-NRL
                         
                         # Check cluster nodes
-                        kubectl version --client
-                        kubectl config get-contexts
-                        kubectl get nodes
+                        ${KUBECTL_PATH}/kubectl version --client
+                        ${KUBECTL_PATH}/kubectl config get-contexts
+                        ${KUBECTL_PATH}/kubectl get nodes
                         
                         # Deploy Kubernetes manifests
-                        kubectl apply -f deployment.yaml
-                        kubectl apply -f service.yaml
-                        kubectl apply -f ingress.yaml
+                        ${KUBECTL_PATH}/kubectl apply -f deployment.yaml
+                        ${KUBECTL_PATH}/kubectl apply -f service.yaml
+                        ${KUBECTL_PATH}/kubectl apply -f ingress.yaml
                         '''
                     }
                 }
