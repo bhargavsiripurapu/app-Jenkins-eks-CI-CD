@@ -57,7 +57,7 @@ pipeline {
                 chmod +x ./kubectl
         
                 # Move kubectl to /usr/local/bin
-                sudo mv ./kubectl /usr/local/bin/kubectl
+                mv ./kubectl /usr/local/bin/kubectl
                 
                 # Update the PATH for the current session
                 export PATH=\$PATH:/usr/local/bin
