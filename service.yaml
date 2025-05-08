@@ -13,5 +13,5 @@ spec:
     - protocol: TCP
       port: 80       # The port exposed by the Service
       targetPort: 80 # The port your application listens on inside the container
-  type: LoadBalancer
+  type: ClusterIP
 
