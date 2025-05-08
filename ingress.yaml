@@ -12,7 +12,8 @@ metadata:
     alb.ingress.kubernetes.io/success-codes: "200-399" # Expected success response codes
 spec:
   rules:
-    - http:
+    - host: k8s-default-nrlappin-44a4362c8c-538945577.ap-south-2.elb.amazonaws.com
+      http:
         paths:
           - path: /
             pathType: Prefix
