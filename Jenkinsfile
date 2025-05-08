@@ -6,6 +6,7 @@ pipeline {
         IMAGE_TAG = "${BUILD_NUMBER}"           
         K8S_NAMESPACE = 'default'       
         AWS_ACCOUNT_ID = '090814668573'
+        KUBECTL_PATH = "${env.HOME}/bin"
         
     }
     stages {
@@ -51,19 +52,17 @@ pipeline {
         }
         stage('Install kubectl') {
             steps {
-                sh """
-                # Download and install kubectl
-                curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.6/2024-11-15/bin/linux/amd64/kubectl
-                chmod +x ./kubectl
-        
-                # Move kubectl to /usr/local/bin
-                mv ./kubectl /usr/local/bin/kubectl
-                
-                # Update the PATH for the current session
-                export PATH=\$PATH:/usr/local/bin
-                
-                # Verify kubectl installation
-                echo "kubectl installed in PATH: \$PATH"
+                 sh """
+                # Download and install kubectl to a user-writable directory
+                mkdir -p ${KUBECTL_PATH}
+                curl -o ${KUBECTL_PATH}/kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.6/2024-11-15/bin/linux/amd64/kubectl
+                chmod +x ${KUBECTL_PATH}/kubectl
+
+                # Add kubectl to PATH
+                echo "export PATH=${KUBECTL_PATH}:\$PATH" >> ~/.bashrc
+                export PATH=${KUBECTL_PATH}:\$PATH
+
+                # Verify kubectl
                 which kubectl
                 kubectl version --client
                 """
