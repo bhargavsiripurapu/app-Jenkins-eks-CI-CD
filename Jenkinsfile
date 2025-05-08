@@ -41,7 +41,7 @@ pipeline {
                         git config --global user.email "bhargav.ptd@gmail.com"
                         git config --global user.name "bhargavsiripurapu"
                         git remote set-url origin https://$GITHUB_TOKEN@github.com/bhargavsiripurapu/app-Jenkins-eks-CI-CD.git
-                        git add deployment.yaml
+                        git add -f deployment.yaml
                         git commit -m "Updated image to ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}:${IMAGE_TAG}"
                         git push origin main
                         """
