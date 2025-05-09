@@ -93,7 +93,7 @@ pipeline {
                         # Deploy Kubernetes manifests
                         ${KUBECTL_PATH}/kubectl apply -f deployment.yaml
                         ${KUBECTL_PATH}/kubectl apply -f service.yaml
-                        ${KUBECTL_PATH}/kubectl apply -f ingress.yaml
+                       # ${KUBECTL_PATH}/kubectl apply -f ingress.yaml
                         '''
                     }
                 }
