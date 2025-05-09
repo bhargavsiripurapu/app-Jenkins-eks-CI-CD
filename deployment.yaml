@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: nrl-app-container
-        image: 090814668573.dkr.ecr.ap-south-2.amazonaws.com/nrl-internal:23
+        image: 090814668573.dkr.ecr.ap-south-2.amazonaws.com/nrl-internal:24
         ports:
         - containerPort: 80
